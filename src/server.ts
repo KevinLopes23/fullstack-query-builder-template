@@ -1,38 +1,48 @@
-import express, { Request, Response } from "express"
-import { knex } from "./database/knex"
+import express, { Request, Response } from "express";
+import { knex } from "./database/knex";
 
-const app = express()
-app.use(express.json())
+const app = express();
+app.use(express.json());
 
 app.post("/courses", async (request: Request, response: Response) => {
-  const {name} = request.body
+  const { name } = request.body;
 
-  await knex("courses").insert({name})
+  await knex("courses").insert({ name });
 
-  response.status(201).json()
-})
+  response.status(201).json();
+});
 
-app.get("/courses", async (request: Request, response: Response) =>{
-  const courses = await knex("courses").select("*")
+app.get("/courses", async (request: Request, response: Response) => {
+  const courses = await knex("courses").select("*");
 
-  response.status(200).json(courses)
-})
+  response.status(200).json(courses);
+});
 
 app.put("/courses/:id", async (request: Request, response: Response) => {
-  const {id} = request.params
-  const {name} = request.body
+  const { id } = request.params;
+  const { name } = request.body;
 
-  await knex("courses").update({name}).where({id})
+  await knex("courses").update({ name }).where({ id });
 
-  response.status(200).json()
-})
+  response.status(200).json();
+});
 
 app.delete("/courses/:id", async (request: Request, response: Response) => {
-  const {id} = request.params
+  const { id } = request.params;
 
-  await knex("courses").delete().where({id})
+  await knex("courses").delete().where({ id });
 
-  response.status(204).json()
-})
+  response.status(204).json();
+});
 
-app.listen(3333, () => console.log(`Server is running on port 3333`))
+app.post("/modules", async (request: Request, response: Response) => {
+  const { name, course_id } = request.body;
+  await knex("course_modules").insert({ name, course_id });
+  return response.status(201).json();
+});
+
+app.get("/modules", async (request: Request, response: Response) => {
+  const modules = await knex("course_modules").select("*");
+  return response.status(200).json(modules);
+});
+app.listen(3333, () => console.log(`Server is running on port 3333`));
